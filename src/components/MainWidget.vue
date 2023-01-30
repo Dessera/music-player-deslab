@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import TopWidget from "./Header/TopWidget.vue"
 import AsideWidget from "./Aside/AsideWidget.vue";
+import FootWidget from "./Foot/FootWidget.vue";
 // 移动侧边栏指令
 // #region v-move
 const vMove = {
@@ -43,7 +44,9 @@ const vMove = {
 				<el-main>
 					<router-view></router-view>
 				</el-main>
-				<el-footer>Footer</el-footer>
+				<el-footer>
+					<FootWidget></FootWidget>
+				</el-footer>
 			</el-container>
 		</el-container>
 	</el-container>
