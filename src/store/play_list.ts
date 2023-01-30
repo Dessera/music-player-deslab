@@ -5,6 +5,7 @@ export default {
 		list: [
 			"/home/dessera/Music/test.m4a"
 		],
+		current_index: 0
 	},
 	getters: {
 		base_list(store: any) {
@@ -20,6 +21,11 @@ export default {
 				store.list.push(items);
 			} else if (items) {
 				store.list = store.list.concat(items);
+			}
+		},
+		SWITCH_CURRENT_INDEX(store: any, index: number) {
+			if (index >= 0 && index < store.list.length) {
+				store.current_index = index;
 			}
 		}
 	},

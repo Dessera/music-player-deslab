@@ -4,13 +4,12 @@ import { open } from "@tauri-apps/api/dialog";
 import { ElMessage } from 'element-plus';
 const store = useStore();
 
-let play_list = computed(() => {
-	return store.state.play_list.list;
-});
+// 包含目前播放列表文件名的 :string[]
 let base_list = computed(() => {
 	return store.getters.base_list;
 });
 
+// 添加播放逻辑在此
 const append_list = async () => {
 	try {
 		const res = await open({
@@ -26,6 +25,7 @@ const append_list = async () => {
 		ElMessage.error(`添加失败:${e}`);
 	}
 };
+
 </script>
 
 <template>
