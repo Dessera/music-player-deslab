@@ -41,6 +41,10 @@ export default {
 		CURRENT_INDEX_PLUS(store: any) {
 			store.current_index++;
 			if (store.current_index >= store.list.length) store.current_index = 0;
+		},
+		CURRENT_INDEX_MINUS(store: any) {
+			store.current_index--;
+			if (store.current_index < 0) store.current_index = store.list.length - 1;
 		}
 	},
 	actions: {}

@@ -55,6 +55,13 @@ const toggle_play_state = async () => {
 		play_state.value ? player.value.play() : player.value.pause();
 	}
 };
+// 切换按钮
+const music_next = ()=>{
+	store.commit("CURRENT_INDEX_PLUS");
+};
+const music_prev = ()=>{
+	store.commit("CURRENT_INDEX_MINUS");
+};
 </script>
 
 <template>
@@ -68,7 +75,7 @@ const toggle_play_state = async () => {
 		@ended="play_end_handler">
 	</audio>
 	<el-row type="flex" align="middle" justify="space-around" class="player_widget">
-		<el-button type="danger" circle size="small">
+		<el-button type="danger" circle size="small" @click="music_prev">
 			<el-icon><i-ep-arrow-left /></el-icon>
 		</el-button>
 		<el-link type="danger" :underline="false" circle @click="toggle_play_state">
@@ -77,7 +84,7 @@ const toggle_play_state = async () => {
 				<i-ep-video-pause v-show="play_state" />
 			</el-icon>
 		</el-link>
-		<el-button type="danger" circle size="small">
+		<el-button type="danger" circle size="small" @click="music_next">
 			<el-icon><i-ep-arrow-right /></el-icon>
 		</el-button>
 	</el-row>
