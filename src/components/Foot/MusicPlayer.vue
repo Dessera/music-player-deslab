@@ -2,59 +2,56 @@
 import { invoke } from "@tauri-apps/api";
 import { useStore } from "vuex";
 const store = useStore();
-let play_state = ref(false);
+// 从store中读取全局设置
+let auto_play_flag = store.state.boot_option.auto_play_on_start ? 1 : 0;
+// 播放状态以及播放器
+let playable = ref(false);
+let play_state = ref(store.state.boot_option.auto_play_on_start);
 let player = ref();
-let dir = ref("/home/dessera/Music/test.mp3");
-let url_playing = ref("");
 
 // 控制目前播放的音乐
 // 待修改
 // 1. 播放有延迟 -- 读取音乐的时间间隔
 // 2. 修改播放列表后音乐会重置
-let current_index = computed(() => {
-	return store.state.play_list.current_index;
-})
-let play_list = computed(() => {
-	return store.state.play_list.list;
-});
+let url_playing = ref("");
 watchEffect(async () => {
-	try {
-		const path = play_list.value[current_index.value];
-		const data: number[] = await invoke("get_music_base64", { path });
-		const data_blob = new Blob([new Uint8Array(data)], { type: "media/mpeg" });
-		url_playing.value = URL.createObjectURL(data_blob);
-	} catch (e) {
-		url_playing.value = "";
-	}
+	url_playing.value = await store.getters.current_url;
 });
+const play_end_handler = () => {
+	play_state.value = false;
+	playable.value = false;
+	store.commit("CURRENT_INDEX_PLUS");
+};
+const can_play_handler = () => {
+	playable.value = true;
+	if (auto_play_flag === 0) {
+		auto_play_flag++;
+		return ;
+	}
+	play_state.value = true;
+	player.value.play();
+};
 // 播放相关操作
 // 待修改：
 // 多次拖动进度条会卡死
 let progress = ref(0);
 const update_time = () => {
+	if (updateInProgress.value) return;
 	if (player.value.src) {
 		progress.value = player.value.currentTime / player.value.duration * 100;
 	} else {
 		progress.value = 0;
 	}
 };
-let updateInProgress = false;
-let timerId: any;
+let updateInProgress = ref(false);
 const change_play_current = (time: any) => {
-	if (updateInProgress) {
-		return;
+	if (playable.value) {
+		player.value.currentTime = time / 100 * player.value.duration;
 	}
-	clearTimeout(timerId);
-	updateInProgress = true;
-	timerId = setTimeout(() => {
-		if (url_playing.value !== "") {
-			player.value.currentTime = time / 100 * player.value.duration;
-		}
-		updateInProgress = false;
-	}, 200);
+	updateInProgress.value = false;
 };
 const toggle_play_state = async () => {
-	if (url_playing.value !== "") {
+	if (playable.value) {
 		play_state.value = !play_state.value;
 		play_state.value ? player.value.play() : player.value.pause();
 	}
@@ -62,7 +59,9 @@ const toggle_play_state = async () => {
 </script>
 
 <template>
-	<audio crossorigin="true" :src="url_playing" ref="player" @timeupdate="update_time"></audio>
+	<audio crossorigin="true" :src="url_playing" ref="player" @canplay="can_play_handler" @timeupdate="update_time"
+		@ended="play_end_handler">
+	</audio>
 	<el-row type="flex" align="middle" justify="space-around" class="player_widget">
 		<el-button type="danger" circle size="small">
 			<el-icon><i-ep-arrow-left /></el-icon>
@@ -78,7 +77,9 @@ const toggle_play_state = async () => {
 		</el-button>
 	</el-row>
 	<div class="whitespace">
-		<el-slider v-model="progress" :show-tooltip="false" @input="change_play_current"></el-slider>
+		<el-slider v-model="progress" :show-tooltip="false" @change="change_play_current"
+			@mousedown="updateInProgress = true">
+		</el-slider>
 	</div>
 </template>
 
