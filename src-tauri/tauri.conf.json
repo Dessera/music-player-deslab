@@ -19,7 +19,8 @@
 			},
 			"fs": {
 				"scope": [
-					"$AUDIO/*"
+					"$APPCONFIG/deslab_music/*",
+					"$APPCONFIG/deslab_music"
 				]
 			},
 			"dialog": {

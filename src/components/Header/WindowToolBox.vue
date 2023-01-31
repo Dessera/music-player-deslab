@@ -14,6 +14,8 @@
 
 <script lang="ts" setup>
 import { appWindow } from "@tauri-apps/api/window";
+import { useStore } from "vuex";
+const store = useStore();
 
 // #region window methods
 async function minimize() {

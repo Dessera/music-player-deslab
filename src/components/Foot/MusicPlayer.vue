@@ -3,16 +3,15 @@ import { invoke } from "@tauri-apps/api";
 import { useStore } from "vuex";
 const store = useStore();
 // 从store中读取全局设置
-let auto_play_flag = store.state.boot_option.auto_play_on_start ? 1 : 0;
+let auto_play_flag: boolean = store.state.boot_option.option.auto_play_on_start;
 // 播放状态以及播放器
 let playable = ref(false);
-let play_state = ref(store.state.boot_option.auto_play_on_start);
+let play_state = ref(auto_play_flag);
 let player = ref();
 
 // 控制目前播放的音乐
 // 待修改
-// 1. 播放有延迟 -- 读取音乐的时间间隔
-// 2. 修改播放列表后音乐会重置
+// 1. 修改播放列表后音乐会重置
 let url_playing = ref("");
 watchEffect(async () => {
 	url_playing.value = await store.getters.current_url;
@@ -24,9 +23,9 @@ const play_end_handler = () => {
 };
 const can_play_handler = () => {
 	playable.value = true;
-	if (auto_play_flag === 0) {
-		auto_play_flag++;
-		return ;
+	if (!auto_play_flag) {
+		auto_play_flag = !auto_play_flag;
+		return;
 	}
 	play_state.value = true;
 	player.value.play();

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import MusicPlayer from "./MusicPlayer.vue";
-import AudioPlayer from "./AudioPlayer.vue";
+import AudioList from "./AudioList.vue";
 
 const visible = ref(false);
 </script>
