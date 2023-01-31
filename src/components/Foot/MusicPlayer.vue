@@ -58,7 +58,13 @@ const toggle_play_state = async () => {
 </script>
 
 <template>
-	<audio crossorigin="true" :src="url_playing" ref="player" @canplay="can_play_handler" @timeupdate="update_time"
+	<audio 
+		preload="auto" 
+		crossorigin="true" 
+		:src="url_playing" 
+		ref="player" 
+		@canplay="can_play_handler"
+		@timeupdate="update_time" 
 		@ended="play_end_handler">
 	</audio>
 	<el-row type="flex" align="middle" justify="space-around" class="player_widget">
@@ -76,7 +82,10 @@ const toggle_play_state = async () => {
 		</el-button>
 	</el-row>
 	<div class="whitespace">
-		<el-slider v-model="progress" :show-tooltip="false" @change="change_play_current"
+		<el-slider 
+			v-model="progress" 
+			:show-tooltip="false" 
+			@change="change_play_current"
 			@mousedown="updateInProgress = true">
 		</el-slider>
 	</div>

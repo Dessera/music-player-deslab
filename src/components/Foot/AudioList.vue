@@ -8,6 +8,9 @@ const store = useStore();
 let base_list = computed(() => {
 	return store.getters.base_list;
 });
+let current_index = computed(() => {
+	return store.state.play_list.current_index;
+});
 
 // 添加播放逻辑在此
 const append_list = async () => {
@@ -26,11 +29,21 @@ const append_list = async () => {
 	}
 };
 
+const switch_music = (index: number) => {
+	store.commit("SWITCH_CURRENT_INDEX", index);
+}
+
 </script>
 
 <template>
 	<div class="list">
-		<el-link v-for="(item, index) in base_list" :key="index">{{ item }}</el-link>
+		<el-link 
+			v-for="(item, index) in base_list" 
+			:key="index" 
+			:type="index === current_index ? 'primary' : 'default'"
+			@click="switch_music(index)">
+			{{ item }}
+		</el-link>
 		<el-link type="primary" @click="append_list">添加</el-link>
 	</div>
 </template>
